@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>篝火边的八种人</title>
+<link href="https://fontsapi.zeoseven.com/175/main/result.css" onload="this.rel='stylesheet'" rel="preload" as="style" crossorigin />
+<noscript><link rel="stylesheet" href="https://fontsapi.zeoseven.com/175/main/result.css" /></noscript>
+<link href="https://fontsapi.zeoseven.com/2196/main/result.css" onload="this.rel='stylesheet'" rel="preload" as="style" crossorigin />
+<noscript><link rel="stylesheet" href="https://fontsapi.zeoseven.com/2196/main/result.css" /></noscript>
+<style>
+  :root{
+    --bg:#1a1410;
+    --bg-deep:#120d0a;
+    --ember:#c9743a;
+    --ember-soft:#a8612f;
+    --glow:#e89b5a;
+    --text:#e8ddc9;
+    --text-dim:#a8967c;
+    --text-faint:#6b5d4a;
+    --line:#3a2e22;
+    --card:#221a13;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    background:var(--bg-deep);
+    color:var(--text);
+    font-family:"Songti SC","Noto Serif SC",STSong,serif;
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  /* 缓慢呼吸的火光氛围 */
+  .ambient{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    background:radial-gradient(ellipse 70% 50% at 50% 38%, rgba(201,116,58,0.13), transparent 70%);
+    animation:breathe 7s ease-in-out infinite;
+    z-index:0;
+  }
+  @keyframes breathe{
+    0%,100%{opacity:0.55}
+    50%{opacity:1}
+  }
+  .stage{
+    position:relative;
+    z-index:1;
+    max-width:680px;
+    margin:0 auto;
+    padding:0 28px;
+    min-height:100%;
+  }
+  .screen{display:none;animation:fadein .9s ease both}
+  .screen.active{display:block}
+  @keyframes fadein{
+    from{opacity:0;transform:translateY(12px)}
+    to{opacity:1;transform:translateY(0)}
+  }
+
+  /* ===== 封面 ===== */
+  #cover{
+    text-align:left;
+    min-height:88vh;
+    flex-direction:column;
+    justify-content:flex-end;
+    padding:42vh 0 70px;
+    position:relative;
+  }
+  #cover.active{display:flex}
+  /* 右上角的火光光晕 */
+  .cover-rays{
+    position:absolute;
+    top:-18%;
+    right:-20%;
+    width:100%;
+    height:70%;
+    pointer-events:none;
+    opacity:.9;
+    filter:blur(34px);
+  }
+  .cover-eyebrow{
+    font-size:12.5px;
+    letter-spacing:.5em;
+    color:var(--text-faint);
+    margin-bottom:22px;
+    padding-left:.5em;
+  }
+  .cover-title{
+    font-family:"MaoKenWangFengYaSong","Songti SC",serif;
+    font-size:clamp(52px,17vw,92px);
+    font-weight:normal;
+    letter-spacing:.04em;
+    line-height:1.12;
+    color:var(--text);
+    text-shadow:0 0 44px rgba(201,116,58,0.3);
+  }
+  .cover-sub{
+    font-family:"MaoKenWangWenMingSong-R","Songti SC",serif;
+    margin-top:22px;
+    font-size:18px;
+    color:var(--text-dim);
+    line-height:1.9;
+    font-style:italic;
+  }
+  .cover-sub .anth{
+    font-family:"MaoKenWangWenMingSong-R","Songti SC",serif;
+    display:block;
+    margin-top:24px;
+    font-size:14.5px;
+    color:var(--text-faint);
+    font-style:normal;
+    letter-spacing:.04em;
+    line-height:1.9;
+    max-width:30em;
+  }
+  .start-btn{
+    margin-top:46px;
+    align-self:flex-start;
+    display:inline-block;
+    padding:15px 52px;
+    font-family:inherit;
+    font-size:17px;
+    letter-spacing:.3em;
+    color:var(--glow);
+    background:rgba(201,116,58,0.06);
+    border:1px solid var(--ember-soft);
+    border-radius:2px;
+    cursor:pointer;
+    transition:all .5s ease;
+    padding-left:calc(52px + .3em);
+    backdrop-filter:blur(4px);
+    -webkit-backdrop-filter:blur(4px);
+  }
+  .start-btn:hover{
+    background:rgba(201,116,58,0.14);
+    border-color:var(--glow);
+    box-shadow:0 0 30px rgba(201,116,58,0.22);
+    color:var(--text);
+  }
+  .start-btn:focus-visible{outline:2px solid var(--glow);outline-offset:4px}
+
+  /* ===== 题目 ===== */
+  .progress{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:46px;
+    padding-top:40px;
+  }
+  .progress-track{
+    flex:1;
+    height:1px;
+    background:var(--line);
+    position:relative;
+  }
+  .progress-fill{
+    position:absolute;
+    left:0;top:0;height:1px;
+    background:linear-gradient(90deg,var(--ember-soft),var(--glow));
+    transition:width .6s ease;
+    box-shadow:0 0 8px rgba(232,155,90,0.6);
+  }
+  .progress-num{
+    font-size:13px;
+    letter-spacing:.15em;
+    color:var(--text-faint);
+    white-space:nowrap;
+  }
+  .q-scene{
+    font-size:clamp(17px,4.4vw,20px);
+    color:var(--text);
+    line-height:1.95;
+    margin-bottom:38px;
+    font-weight:500;
+  }
+  .options{display:flex;flex-direction:column;gap:14px;padding-bottom:24px}
+  .back-btn{
+    align-self:flex-start;
+    display:inline-block;
+    margin-bottom:60px;
+    padding:9px 4px;
+    font-family:inherit;
+    font-size:13.5px;
+    letter-spacing:.18em;
+    color:var(--text-faint);
+    background:transparent;
+    border:none;
+    cursor:pointer;
+    transition:color .3s ease;
+  }
+  .back-btn:hover{color:var(--glow)}
+  .back-btn:focus-visible{outline:2px solid var(--glow);outline-offset:3px}
+  .back-btn.hidden{visibility:hidden;pointer-events:none}
+  .opt{
+    text-align:left;
+    font-family:inherit;
+    font-size:15.5px;
+    line-height:1.8;
+    color:var(--text-dim);
+    background:linear-gradient(135deg, rgba(58,46,34,0.55), rgba(34,26,19,0.4));
+    border:1px solid rgba(168,150,124,0.14);
+    border-radius:10px;
+    padding:18px 22px;
+    cursor:pointer;
+    transition:all .3s ease;
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    box-shadow:inset 0 1px 0 rgba(245,200,138,0.06), 0 4px 20px rgba(0,0,0,0.25);
+  }
+  .opt:hover{
+    color:var(--text);
+    border-color:rgba(232,155,90,0.4);
+    background:linear-gradient(135deg, rgba(72,56,40,0.65), rgba(42,32,22,0.5));
+    transform:translateX(3px);
+    box-shadow:inset 0 1px 0 rgba(245,200,138,0.12), 0 6px 26px rgba(201,116,58,0.15);
+  }
+  .opt:focus-visible{outline:2px solid var(--glow);outline-offset:3px}
+  .opt.chosen{
+    border-color:rgba(232,155,90,0.55);
+    background:linear-gradient(135deg, rgba(90,66,42,0.7), rgba(52,38,24,0.55));
+    color:var(--text);
+    box-shadow:inset 0 1px 0 rgba(245,200,138,0.18), 0 0 22px rgba(201,116,58,0.18);
+  }
+  .opt-letter{
+    color:var(--ember);
+    font-size:14px;
+    margin-right:14px;
+    letter-spacing:.1em;
+  }
+
+  /* ===== 结果 ===== */
+  #result{
+    text-align:left;
+    min-height:88vh;
+    flex-direction:column;
+    justify-content:center;
+    padding:70px 0 70px;
+    position:relative;
+  }
+  #result.active{display:flex}
+  .result-rays{
+    position:absolute;
+    top:4%;
+    right:-6%;
+    width:64%;
+    height:36%;
+    pointer-events:none;
+    opacity:.7;
+  }
+  .result-glow{
+    position:relative;
+    display:block;
+    margin-bottom:8px;
+  }
+  .result-eyebrow{
+    font-size:12.5px;
+    letter-spacing:.45em;
+    color:var(--text-faint);
+    margin-bottom:20px;
+    padding-left:.45em;
+  }
+  .result-name{
+    font-family:"MaoKenWangFengYaSong","Songti SC",serif;
+    font-size:clamp(56px,18vw,96px);
+    font-weight:normal;
+    letter-spacing:.1em;
+    color:var(--text);
+    padding-left:.1em;
+    text-shadow:0 0 50px rgba(232,155,90,0.4);
+    animation:nameglow 4s ease-in-out infinite;
+  }
+  @keyframes nameglow{
+    0%,100%{text-shadow:0 0 50px rgba(232,155,90,0.35)}
+    50%{text-shadow:0 0 75px rgba(232,155,90,0.6)}
+  }
+  .result-divider{
+    width:44px;height:1px;
+    background:var(--ember-soft);
+    margin:34px 0;
+  }
+  .result-desc{
+    font-size:16.5px;
+    line-height:2.15;
+    color:var(--text-dim);
+    text-align:left;
+    max-width:560px;
+    margin:0;
+  }
+  .result-runners{
+    margin-top:46px;
+    font-size:13.5px;
+    color:var(--text-faint);
+    letter-spacing:.08em;
+    line-height:2.2;
+  }
+  .result-runners span{color:var(--text-dim)}
+  .restart-btn{
+    margin-top:48px;
+    display:inline-block;
+    padding:13px 44px;
+    font-family:inherit;
+    font-size:14px;
+    letter-spacing:.25em;
+    color:var(--text-dim);
+    background:transparent;
+    border:1px solid var(--line);
+    border-radius:2px;
+    cursor:pointer;
+    transition:all .4s ease;
+    padding-left:calc(44px + .25em);
+  }
+  .restart-btn:hover{
+    color:var(--glow);
+    border-color:var(--ember-soft);
+  }
+  .restart-btn:focus-visible{outline:2px solid var(--glow);outline-offset:3px}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+<div class="ambient"></div>
+<div class="stage">
+
+  <!-- 封面 -->
+  <section id="cover" class="screen active">
+    <svg class="cover-rays" viewBox="0 0 400 240" preserveAspectRatio="xMidYMin slice" aria-hidden="true">
+      <defs>
+        <radialGradient id="raySun" cx="100%" cy="0%" r="100%">
+          <stop offset="0%" stop-color="#f7cf95" stop-opacity="0.7"/>
+          <stop offset="22%" stop-color="#e89b5a" stop-opacity="0.4"/>
+          <stop offset="55%" stop-color="#c9743a" stop-opacity="0.12"/>
+          <stop offset="100%" stop-color="#c9743a" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <circle cx="400" cy="0" r="400" fill="url(#raySun)"/>
+    </svg>
+    <div class="cover-eyebrow">部 落 志</div>
+    <h1 class="cover-title">篝火边的<br>八种人</h1>
+    <p class="cover-sub">
+      部落里没有永久的首领，<br>但有这八种人。
+      <span class="anth">十六个夜晚，火光会照出你是其中的哪一种。</span>
+    </p>
+    <button class="start-btn" id="startBtn">走 近 火 堆</button>
+  </section>
+
+  <!-- 题目 -->
+  <section id="quiz" class="screen">
+    <div class="progress">
+      <span class="progress-num" id="progressNum">一 / 十六</span>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+    <p class="q-scene" id="qScene"></p>
+    <div class="options" id="options"></div>
+    <button class="back-btn" id="backBtn">← 退 回 上 一 步</button>
+  </section>
+
+  <!-- 结果 -->
+  <section id="result" class="screen">
+    <svg class="result-rays" viewBox="0 0 400 240" preserveAspectRatio="xMidYMin meet" aria-hidden="true">
+      <defs>
+        <radialGradient id="raySun2" cx="100%" cy="0%" r="135%">
+          <stop offset="0%" stop-color="#f5c88a" stop-opacity="0.62"/>
+          <stop offset="32%" stop-color="#e89b5a" stop-opacity="0.32"/>
+          <stop offset="100%" stop-color="#c9743a" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <circle cx="400" cy="0" r="190" fill="url(#raySun2)"/>
+    </svg>
+    <div class="result-eyebrow">火 光 照 出 的 是</div>
+    <div class="result-glow"><div class="result-name" id="resultName"></div></div>
+    <div class="result-divider"></div>
+    <p class="result-desc" id="resultDesc"></p>
+    <p class="result-runners" id="resultRunners"></p>
+    <button class="restart-btn" id="restartBtn">重 走 一 遍</button>
+  </section>
+
+</div>
+
+<script>
+const CN_NUM = ['一','二','三','四','五','六','七','八','九','十','十一','十二','十三','十四','十五','十六'];
+
+// 角色解说词
+const ROLES = {
+  '巫师':'你的眼睛看见的从来都不止一件事。风向变了，鸟群散了，河水的颜色不对——别人看见三件事，你看见一张网。部落需要你，因为混沌之中只有你能指出那条隐藏的线索。代价是你的脑子永远停不下来，有时候连你自己都分不清，哪条线是真的，哪条是你自己织出来的。篝火旁你说的那些话，有人当时觉得是胡话，第二年才突然听懂。',
+  '先知':'你很少说话。但你开口的时候声音很轻，像是在转述一件已经发生过的事。别人问你怎么知道的，你答不上来。你自己也不知道。只是有些时刻，心里会升起一种很安静的确定感，像水面下的石头——看不见，但踩上去就知道它在。部落里的人有时候怕你。那种怕里面有敬。',
+  '猎手':'风吹过来的时候你先闻到了血腥味。脚下的泥土是软的，前面草丛被压倒的方向说明猎物刚经过。你没有想这些——身体已经动了。你活在每一个具体的瞬间里，皮肤上的风、脚底的温度、远处折断树枝的声响。别人还在商量的时候，你已经跑出去了。有时候你回来了，有时候你受伤了。但你从来没有犹豫过。',
+  '长老':'你记得三十年前那场大雪埋到了哪棵树。你记得旧营地的河边有一块石头，夏天坐上去是凉的。你记得每一次搬迁走的路、每一种野果成熟的时间、每一个死去的人最后说的话。拿不准的事大家就来问你，你总能从过去找到一个相似的情形。你让所有人知道，我们从哪里来。',
+  '将':'有人得拿主意。有人得在所有人都慌的时候站出来说：这样做。你就是那个人。你不需要所有人都喜欢你，你需要所有人都活着。天亮之前把营地搬完，雨季之前把食物存够，猎队出发之前把分工定好。做完了再说别的。你的世界很清楚：有用的事先做，没用的话少说。',
+  '工匠':'绳结松了你会拆开重新打，哪怕别人觉得能用就行。石器的刃口差一点角度，在你眼里就是两种完全不同的工具。你习惯把事情拆到最小的单位再重新理解一遍。有人觉得你慢，有人觉得你较真。但每次东西真的坏了，来找的人都是你。你相信世界有一个可以被理解的底层结构，你愿意花时间找到它。',
+  '说书人':'每个部落都有一个人，大家吵完架了会不自觉地看向那个方向。你就是那个方向。你知道谁今天不高兴了，谁和谁之间的气氛变了，谁笑着说没事但其实在撑着。你把这些都看在眼里，然后讲了一个故事，故事讲完，大家觉得火更暖了一点。你的天赋是让一群人觉得自己是"我们"。你的消耗也在这里——所有人的情绪都经过你，但很少有人问你累不累。',
+  '医者':'你从来不会对哭着的人说"别哭了"。受伤的猎手回来，别人围上去问怎么回事，你已经蹲在旁边开始清理伤口了。你不问经过，也不评价对错，手很轻，眼神很稳。部落里有些话只有你能听到——因为所有人都知道，说给你听的东西不会被拿去别处讲。你心里有一条很清楚的线，什么该做、什么不该做，从来没有动摇过。有时候整个部落都在妥协，只有你安安静静地站在原来的位置。没有人要求你这样，你只是做不到别的。'
+};
+
+// 题目数据：scene + 四个选项[文本, 角色]
+const QUESTIONS = [
+  {
+    scene:'今晚月光很好，猎手们带回了猎物，篝火烧得很旺。吃饱之后大家三三两两散坐着。你呢？',
+    opts:[
+      ['你找了一个稍微远一点的位置坐下来。不是不想靠近，只是这个距离刚好——能看见火光映在每个人脸上，但不需要说话。','医者'],
+      ['你注意到有个人今晚一直没怎么开口，就不经意地坐到那人旁边，聊起了今天打猎时发生的一件小事。','说书人'],
+      ['火烤得脸发烫。你伸手翻了翻灰里的烤肉，撕下一块边角，烫嘴，但是香。','猎手'],
+      ['你盯着火堆看了很久。有什么东西在心里转，不知道是什么，但你知道今晚不会睡得太早。','先知']
+    ]
+  },
+  {
+    scene:'清晨，有人发现河对岸的林子倒了一大片，地面上有从没见过的巨大脚印。整个营地都紧张起来了。',
+    opts:[
+      ['你蹲下来看了看脚印的形状，突然想起来——上个月河里的鱼群改了方向，前几天乌鸦也不叫了。这些事是连在一起的。','巫师'],
+      ['先把孩子和老人往山洞那边撤。你、你、你，去河边看看脚印通向哪。现在就走。','将'],
+      ['你已经拿起了矛。脚印很深，踩过的草还是湿的——不远，方向是东边。','猎手'],
+      ['你没有靠近脚印。站在原地看了一眼远处的山脊线，心里有一个很安静的声音说：不是冲我们来的。','先知']
+    ]
+  },
+  {
+    scene:'部落里最年轻的猎手已经躺了三天了，烧不退，嘴唇干裂，夜里不停说梦话。大家都很担心。',
+    opts:[
+      ['你每天都去看年轻的猎手。不一定能帮上什么，但你觉得有人坐在旁边，他醒来的时候不会那么害怕。','医者'],
+      ['你想起来了——很多年前，爷爷也这样烧过一次。当时用的是河边那种苦叶子煮水，那种叶子现在应该还有。','长老'],
+      ['他嘴里的梦话你留意了。发烧、干裂、梦话——如果把这些和他前几天淋的那场雨放在一起想……也许问题不在身体里面。','巫师'],
+      ['别围着了，围着没用。谁去找苦叶子，谁去打新鲜的水，谁来守夜盯着他——分一下。','将']
+    ]
+  },
+  {
+    scene:'黄昏时候，一个从没见过的人出现在营地边缘。身上的兽皮和你们部落的样式不一样。那人没有说话，站在那里。',
+    opts:[
+      ['你注意到有几个人握紧了手里的东西，孩子们不安地往大人身后躲。你觉得应该先有人走过去，让那人知道我们不是敌意的。','说书人'],
+      ['那人手里没有武器。肩膀塌着，膝盖在抖——是真的累了，不是装的。','猎手'],
+      ['你看了那人一眼就移开了目光。你不知道为什么，但心里已经有了结论。','先知'],
+      ['那人兽皮上的花纹你好像在哪里见过——等等，那个纹路和山那边岩壁上刻的图案，是不是有点像？','巫师']
+    ]
+  },
+  {
+    scene:'部落迁到了新营地。忙完之后你一个人走到河边，水声很大，没有别人。',
+    opts:[
+      ['你本来只是来洗手的，但看着水流的方向突然想到——如果上游那个地方真的有岔口，那昨天看到的那群鹿可能不是从南边来的……','巫师'],
+      ['水很凉，你把脚伸进去。河底石头滑滑的，有小鱼碰到了你的脚踝。你什么都没在想。','猎手'],
+      ['这条河让你想起了以前住过的那个营地旁边的那条。那时候水更清一些，岸边有一棵歪脖子的树，小时候天天爬上去。','长老'],
+      ['你看着水面，河水一直往东走。心里有种很淡的预感，但你没有去追它。它会自己清楚的。','先知']
+    ]
+  },
+  {
+    scene:'分猎物的时候两个人吵起来了，一个说他追了最久，另一个说他投出了最关键的那一矛。其他人不知道站谁那边。',
+    opts:[
+      ['你看着两个人的脸，都气红了。再吵下去别人也要被卷进来——你走过去，先不评理，先让他们都把话说完。','说书人'],
+      ['你在想一个问题：到底"贡献最大"应该怎么定义？追得最久和投得最准，根本是两个不同维度的事。','工匠'],
+      ['这次先一人一半。然后定一个以后都用的分法，下次不用再吵。','将'],
+      ['你没有走过去。你觉得两个人表面上在争猎物，但真正让人难受的不是那块肉。','医者']
+    ]
+  },
+  {
+    scene:'今天的狩猎队要去一片从没去过的林子。出发前大家围在一起商量。',
+    opts:[
+      ['你虽然没去过那片林子，但去过旁边那一片。那边地形是先下坡再上坡，溪流从西往东走，如果这片地势类似的话……','长老'],
+      ['你没怎么说话。但你觉得应该走北边那条路。问你为什么，你说不出来一个具体理由。','先知'],
+      ['分两组，一组沿河走，一组从山脊绕。到分叉的地方汇合。谁走哪条，现在定。','将'],
+      ['说再多不如去看看。走到了自然就知道什么地形。你已经站起来了。','猎手']
+    ]
+  },
+  {
+    scene:'晚上，有个年轻人悄悄坐到你旁边，半天没说话，然后开口说他觉得自己对部落没什么用。',
+    opts:[
+      ['你想了一下，问他："你说\'没用\'——是跟谁比？用什么标准？"','工匠'],
+      ['你没有急着回他。他现在需要的可能不是答案，是有人在这里，不走。','医者'],
+      ['你跟他说起了今天打猎时观察到的一件事，然后又说到了另一件完全不相关的事——"你看，有些东西有用没用，得换一个角度才看得见。"','巫师'],
+      ['"明天跟我去东边设陷阱。少想，多做。做完你自己就知道了。"','将']
+    ]
+  },
+  {
+    scene:'连续赶了三天的路，整个部落都疲惫不堪。你也很累，但让你最难受的不是身体——',
+    opts:[
+      ['所有人都在赶路，没有人停下来问一句：我们真的应该去这个方向吗？','先知'],
+      ['赶路的决定做得太粗糙了。没有人想过这条路到底是不是最优的，说走就走，你憋了一路。','工匠'],
+      ['走得太快了，很多东西来不及记住。经过的那些地方、看到过的植物——你想停下来多看看，但队伍已经走远了。','长老'],
+      ['大家都太累了，没人再说话。你觉得队伍散了——不是身体上的散，是心里的那股劲松了。','说书人']
+    ]
+  },
+  {
+    scene:'雨季提前来了，老营地被淹了一半。部落必须决定：往山上走，还是去下游那片更大的平地？',
+    opts:[
+      ['往山上走。三年前雨季来早的那一次，下游水涨得比山上快得多，当时差点出事。','长老'],
+      ['山上和下游各有各的问题。但如果把这两个地方和中间那条小路结合起来想——其实还有第三种可能。','巫师'],
+      ['争论到天黑也没用。选山上。理由三条：高、近、有遮蔽。出发。','将'],
+      ['你没发表意见。但你注意到有几个人一直没开口，他们的表情像是已经放弃了。你觉得不管去哪，他们的状态才是最应该先被看见的。','医者']
+    ]
+  },
+  {
+    scene:'很多年以后，部落里的人在篝火边聊起你——',
+    opts:[
+      ['"有一次Ta说\'今年冬天会来得很早\'，谁都没当回事。后来真的来了。"','先知'],
+      ['"那段最难的日子里，Ta总是最后一个睡。不是在做什么，就是在那儿坐着，让人觉得还有人醒着。"','说书人'],
+      ['"那年陷阱总是抓不到东西，是Ta发现机关的角度差了一点。调了一下，第二天就有猎物了。"','工匠'],
+      ['"那头野猪冲过来的时候所有人都愣了，就Ta一个人扑上去了。事后问Ta，Ta自己都不记得。"','猎手']
+    ]
+  },
+  {
+    scene:'有一种话你一直想说但始终没说出来，最可能是——',
+    opts:[
+      ['"这个做法其实有问题，我看得出来哪里不对。但要说清楚太麻烦了，而且他们未必想听。"','工匠'],
+      ['"有些从前的事我一直记得。但说出来……可能已经没有人在意了。"','长老'],
+      ['"我其实很在乎这件事。但说出来它就变成了需要被别人评判的东西，我还没准备好。"','医者'],
+      ['"我觉得该这么做。但如果我说了，就要对结果负责——我需要先确定我是对的。"','将']
+    ]
+  },
+  {
+    scene:'如果部落失去了你，最先出现的缺口是什么？',
+    opts:[
+      ['大家不会立刻发现少了什么。但过一段时间，有些人开始觉得没人再关心他们高不高兴了。','说书人'],
+      ['一些很重要的事——比如某条路怎么走、某种果子什么时候能摘——再也没有人记得了。','长老'],
+      ['也许什么都不会立刻出错。但一年以后回过头来，他们会发现有一个关键的节点做了错误选择——那个时候，没有人说出来该停下来。','先知'],
+      ['东西开始出问题了。绳结松了，陷阱歪了，石器的接口不好使——没人知道为什么，也没人能修。','工匠']
+    ]
+  },
+  {
+    scene:'有人在河边捡到一块从没见过的石头，颜色奇怪，敲起来声音和普通石头不一样。',
+    opts:[
+      ['你拿过来看了看，又闻了闻："这个颜色我在山那边的泥土里见过。如果那边的泥土被河水冲下来了——那上游可能出了什么变化。"','巫师'],
+      ['你拿过来掂了掂重量，用指甲划了一下表面，又在另一块石头上磕了磕。不需要想，手已经在试了。','猎手'],
+      ['你敲了几下，认真听了声音的差别。密度不一样，硬度好像也不同。你想知道它是不是比现在做石器用的那种更好。','工匠'],
+      ['你没有急着碰它。你看着大家围上来的样子，觉得有一种安静的珍惜——能对一块新石头感到好奇，这件事本身就挺好的。','医者']
+    ]
+  },
+  {
+    scene:'有件事大家都觉得你应该做得好，但其实你做起来比谁都吃力——',
+    opts:[
+      ['往前看。大家总问你"接下来会怎样"，你想说的是"让我先把之前发生的事理清楚"。','长老'],
+      ['等待。你知道有些事急不来，但身体里有种什么东西坐不住。不是紧张，就是不动让你难受。','猎手'],
+      ['拒绝。有人来找你帮忙，你明明已经太累了，但你就是开不了口说"今天不行"。','说书人'],
+      ['重复做同一件事。第一次有趣，第二次还行，第三次你的脑子就开始跑了，身体在动但人已经不在了。','巫师']
+    ]
+  },
+  {
+    scene:'如果篝火边流传着一句关于你的话，你希望是——',
+    opts:[
+      ['"乱的时候听Ta的，不会错。"','将'],
+      ['"搞不懂的东西交给Ta，Ta能拆明白。"','工匠'],
+      ['"有Ta在的地方，大家就觉得暖和一点。"','说书人'],
+      ['"Ta不常说话，但Ta说的时候，你会觉得Ta说的是真的。"','医者']
+    ]
+  }
+];
+
+// 角色出现顺序（用于并列时的稳定排序）
+const ROLE_ORDER = ['巫师','先知','猎手','长老','将','工匠','说书人','医者'];
+
+let current = 0;
+const scores = {};
+ROLE_ORDER.forEach(r=>scores[r]=0);
+const answers = [];   // 记录每题所选的角色，用于回退扣分与回显
+
+const screens = {
+  cover: document.getElementById('cover'),
+  quiz: document.getElementById('quiz'),
+  result: document.getElementById('result')
+};
+function show(name){
+  Object.values(screens).forEach(s=>s.classList.remove('active'));
+  screens[name].classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderQuestion(){
+  const q = QUESTIONS[current];
+  document.getElementById('progressNum').textContent = CN_NUM[current] + ' / 十六';
+  document.getElementById('progressFill').style.width = ((current)/QUESTIONS.length*100) + '%';
+  document.getElementById('qScene').textContent = q.scene;
+
+  const box = document.getElementById('options');
+  box.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  // 重新触发淡入
+  screens.quiz.classList.remove('active');
+  void screens.quiz.offsetWidth;
+  screens.quiz.classList.add('active');
+
+  q.opts.forEach((opt, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    // 若本题已答过，高亮之前的选择
+    if(answers[current] === opt[1]) btn.classList.add('chosen');
+    btn.innerHTML = '<span class="opt-letter">'+letters[i]+'</span>'+opt[0];
+    btn.addEventListener('click', ()=>choose(opt[1]));
+    box.appendChild(btn);
+  });
+
+  // 第一题没有上一步可退
+  const backBtn = document.getElementById('backBtn');
+  backBtn.classList.toggle('hidden', current === 0);
+}
+
+function choose(role){
+  // 若本题之前已答（回退后改选），先扣掉旧选择的分
+  if(answers[current] !== undefined){
+    scores[answers[current]] -= 1;
+  }
+  scores[role] += 1;
+  answers[current] = role;
+  current++;
+  if(current < QUESTIONS.length){
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function goBack(){
+  if(current === 0) return;
+  current--;
+  renderQuestion();
+}
+
+function showResult(){
+  // 按得分排序，平分时用 ROLE_ORDER 稳定排序
+  const ranked = [...ROLE_ORDER].sort((a,b)=>{
+    if(scores[b] !== scores[a]) return scores[b]-scores[a];
+    return ROLE_ORDER.indexOf(a)-ROLE_ORDER.indexOf(b);
+  });
+  const top = ranked[0];
+  const second = ranked[1];
+  const third = ranked[2];
+
+  document.getElementById('resultName').textContent = top;
+  document.getElementById('resultDesc').textContent = ROLES[top];
+  document.getElementById('resultRunners').innerHTML =
+    '火光偏暗处，还站着 <span>'+second+'</span> 与 <span>'+third+'</span> 的影子。';
+
+  document.getElementById('progressFill').style.width = '100%';
+  show('result');
+}
+
+document.getElementById('startBtn').addEventListener('click', ()=>{
+  show('quiz');
+  renderQuestion();
+});
+document.getElementById('backBtn').addEventListener('click', goBack);
+document.getElementById('restartBtn').addEventListener('click', ()=>{
+  current = 0;
+  ROLE_ORDER.forEach(r=>scores[r]=0);
+  answers.length = 0;
+  show('cover');
+});
+</script>
+</body>
+</html>
